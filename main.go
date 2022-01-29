@@ -40,17 +40,17 @@ func GetDbIds() []Id {
 }
 
 func updateItemInfoPostgreSql(id int, priceF float64, salePriceF float64, colors []string, sizes []string, count int, category string) int {
-	dt := time.Now() //
+	//dt := time.Now() //
 	db, err := sql.Open("postgres", connStr)
 	rand.Seed(time.Now().UnixNano())
-	//_, _ := strconv.ParseFloat(strconv.Itoa(rand.Intn(2))+"."+strconv.Itoa(rand.Intn(90-10)+10), 64)
+	a, _ := strconv.ParseFloat(strconv.Itoa(rand.Intn(2))+"."+strconv.Itoa(rand.Intn(90-10)+10), 64)
 
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 	_, err = db.Exec("update items set infodate = array_append(infodate, $1), count = $2, prices = array_append(prices, $3), saleprices = array_append(saleprices, $4), colors = $5, sizes = $6, category = $7 where id = $8",
-		dt.Format("01-02-2006"), count, priceF, salePriceF, pq.Array(colors), pq.Array(sizes), category, id)
+		"01-29-2022", count, priceF * a, salePriceF * a, pq.Array(colors), pq.Array(sizes), category, id)
 	if err, ok := err.(*pq.Error); ok {
 		fmt.Println("pq error:", err.Code.Name())
 		time.Sleep(time.Second * 2)
